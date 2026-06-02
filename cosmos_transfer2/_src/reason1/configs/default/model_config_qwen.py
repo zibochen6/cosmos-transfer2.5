@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from typing import Dict, List, Optional, Union
 
 import attrs
@@ -101,10 +102,15 @@ class QwenVisionConfig:
     mlp_ratio: Optional[int | None] = None
 
 
+_DEFAULT_ATTN_IMPL = (
+    "flash_attention_2" if os.environ.get("COSMOS_USE_FLASH_ATTN") == "1" else "sdpa"
+)
+
+
 @attrs.define
 class QwenModelConfig(FSDP2ModelConfig):
-    _attn_implementation: str = "flash_attention_2"  # Does not support cp
-    # _attn_implementation: str = "sdpa"
+    _attn_implementation: str = _DEFAULT_ATTN_IMPL  # Does not support cp; use COSMOS_USE_FLASH_ATTN=1 to switch
+    # _attn_implementation: str = "flash_attention_2"
     _attn_implementation_autoset: bool = True
     name_or_path: str = "Qwen/Qwen2.5-VL-3B-Instruct"
 

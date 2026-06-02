@@ -46,12 +46,18 @@ class Blocklist(ContentSafetyGuardrail):
             guardrail_partial_match_min_chars (int, optional): Minimum number of characters in a word to check for partial match. Defaults to 6.
             guardrail_partial_match_letter_count (float, optional): Maximum allowed difference in characters for partial match. Defaults to 0.4.
         """
+        self.guardrail_partial_match_min_chars = guardrail_partial_match_min_chars
+        self.guardrail_partial_match_letter_count = guardrail_partial_match_letter_count
+        self._loaded = False
+
+    def _ensure_loaded(self) -> None:
+        """Lazy-load the blocklist data on first use."""
+        if self._loaded:
+            return
         self.checkpoint_dir = os.path.join(GUARDRAIL1_CHECKPOINT.download(), "blocklist")
         nltk.data.path.append(os.path.join(self.checkpoint_dir, "nltk_data"))
         self.lemmatizer = nltk.WordNetLemmatizer()
         self.profanity = profanity
-        self.guardrail_partial_match_min_chars = guardrail_partial_match_min_chars
-        self.guardrail_partial_match_letter_count = guardrail_partial_match_letter_count
 
         # Load blocklist and whitelist keywords
         self.blocklist_words = read_keyword_list_from_dir(os.path.join(self.checkpoint_dir, "custom"))
@@ -62,9 +68,11 @@ class Blocklist(ContentSafetyGuardrail):
         log.debug(f"Loaded {len(self.blocklist_words)} words/phrases from blocklist")
         log.debug(f"Whitelisted {len(self.whitelist_words)} words/phrases from whitelist")
         log.debug(f"Loaded {len(self.exact_match_words)} exact match words/phrases from blocklist")
+        self._loaded = True
 
     def uncensor_whitelist(self, input_prompt: str, censored_prompt: str) -> str:
         """Explicitly uncensor words that are in the whitelist."""
+        self._ensure_loaded()
         input_words = input_prompt.split()
         censored_words = censored_prompt.split()
         whitelist_words = set(self.whitelist_words)
@@ -84,6 +92,7 @@ class Blocklist(ContentSafetyGuardrail):
             bool: True if the prompt is blocked, False otherwise
             str: A message indicating why the prompt was blocked
         """
+        self._ensure_loaded()
         censored_prompt = self.profanity.censor(input_prompt, censor_char=CENSOR)
         # Uncensor whitelisted words that were censored from blocklist fuzzy matching
         censored_prompt = self.uncensor_whitelist(input_prompt, censored_prompt)
@@ -196,6 +205,7 @@ class Blocklist(ContentSafetyGuardrail):
 
     def is_safe(self, input_prompt: str = "") -> tuple[bool, str]:
         """Check if the input prompt is safe using the blocklist."""
+        self._ensure_loaded()
         # Check if the input is empty
         if not input_prompt:
             return False, "Input is empty"

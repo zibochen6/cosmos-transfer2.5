@@ -65,7 +65,7 @@ class QwenModel(VLMBaseModel):
         elif model_config.model_type == "qwen2_5":
             self.visual = None
             config = AutoConfig.from_pretrained(
-                model_config.name_or_path, torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2"
+                model_config.name_or_path, torch_dtype=torch.bfloat16, attn_implementation="sdpa"
             )
             self.model = Qwen2Model(config)
             model_config.hidden_size = config.hidden_size

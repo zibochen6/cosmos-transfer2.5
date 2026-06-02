@@ -231,7 +231,7 @@ class CommonSetupArguments(pydantic.BaseModel):
     """Configuration file for the model. Leave empty to use the default config for the selected model type."""
     context_parallel_size: pydantic.PositiveInt | None = None
     """Context parallel size. Defaults to WORLD_SIZE set by torchrun."""
-    disable_guardrails: bool = True if SMOKE else False
+    disable_guardrails: bool = True
     """Option to enable or disable guardrails."""
     offload_guardrail_models: bool = False
     """Offload guardrail models to CPU to save GPU memory."""

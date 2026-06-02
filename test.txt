@@ -1,0 +1,112 @@
+(cosmos-transfer2) seeed@seeed:~/workspace/cosmos-transfer2.5$ python scripts/lerobot_side_augment.py 
+[05-29 10:05:39|CRITICAL|cosmos_transfer2/_src/interactive/checkpointer/dcp.py:181:<module>] for the back comptiable pytorch! New DefaultLoadPlanner class is created.
+[05-29 10:05:39|CRITICAL|cosmos_transfer2/_src/predict2/checkpointer/dcp.py:181:<module>] for the back comptiable pytorch! New DefaultLoadPlanner class is created.
+[side_factory_scene] Computing depth video (750 frames, one-time)...
+[Depth] Loading video: lerobot/seeed_rebot_b601_dm/organize_test_tube/videos/observation.images.side/chunk-000/file-000.mp4
+[Depth] Video shape: 8058 frames, 480x640
+[Depth] Truncated to 750 frames
+[Depth] Computing depth maps with VideoDepthAnything...
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)')))"), '(Request ID: 25716c93-6874-4cde-9618-fd6b3cee2e56)')' thrown while requesting HEAD https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
+WARNING:huggingface_hub.utils._http:'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)')))"), '(Request ID: 25716c93-6874-4cde-9618-fd6b3cee2e56)')' thrown while requesting HEAD https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
+Retrying in 1s [Retry 1/5].
+WARNING:huggingface_hub.utils._http:Retrying in 1s [Retry 1/5].
+  0%|                                                    | 0/35 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/seeed/workspace/cosmos-transfer2.5/scripts/lerobot_side_augment.py", line 193, in <module>
+    main()
+    ~~~~^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/scripts/lerobot_side_augment.py", line 127, in main
+    compute_depth_video(video_path, depth_video_path, max_frames)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/scripts/lerobot_side_augment.py", line 68, in compute_depth_video
+    depth_maps = model.generate(video_np)  # (T, H, W) float32
+  File "/home/seeed/workspace/cosmos-transfer2.5/cosmos_transfer2/_src/transfer2/auxiliary/depth_anything/video_depth_model.py", line 142, in generate
+    depths, _ = self.model.infer_video_depth(video, 30, device=self.device)  # type: ignore
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/video_depth.py", line 109, in infer_video_depth
+    depth = self.forward(cur_input) # depth shape: [1, T, H, W]
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/video_depth.py", line 64, in forward
+    features = self.pretrained.get_intermediate_layers(x.flatten(0,1), self.intermediate_layer_idx[self.encoder], return_class_token=True)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2.py", line 308, in get_intermediate_layers
+    outputs = self._get_intermediate_layers_not_chunked(x, n)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2.py", line 277, in _get_intermediate_layers_not_chunked
+    x = blk(x)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2_layers/block.py", line 247, in forward
+    return super().forward(x_or_x_list)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2_layers/block.py", line 105, in forward
+    x = x + attn_residual_func(x)
+            ~~~~~~~~~~~~~~~~~~^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2_layers/block.py", line 84, in attn_residual_func
+    return self.ls1(self.attn(self.norm1(x)))
+                    ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/video_depth_anything/dinov2_layers/attention.py", line 76, in forward
+    x = memory_efficient_attention(q, k, v, attn_bias=attn_bias)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/xformers/ops/fmha/__init__.py", line 311, in memory_efficient_attention
+    return _memory_efficient_attention(
+        Inputs(
+    ...<8 lines>...
+        op=op,
+    )
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/xformers/ops/fmha/__init__.py", line 472, in _memory_efficient_attention
+    return _memory_efficient_attention_forward(
+        inp, op=op[0] if op is not None else None
+    )
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/xformers/ops/fmha/__init__.py", line 495, in _memory_efficient_attention_forward
+    out, *_ = op.apply(inp, needs_gradient=False)
+              ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/xformers/ops/fmha/flash.py", line 645, in apply
+    out, softmax_lse, rng_state = cls.OPERATOR(
+                                  ~~~~~~~~~~~~^
+        inp.query,
+        ^^^^^^^^^^
+    ...<13 lines>...
+        block_tables=block_tables,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_ops.py", line 1255, in __call__
+    return self._op(*args, **kwargs)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_library/autograd.py", line 111, in autograd_impl
+    result = forward_no_grad(*args, Metadata(keyset, keyword_only_args))
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_library/autograd.py", line 40, in forward_no_grad
+    result = op.redispatch(keyset & _C._after_autograd_keyset, *args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_ops.py", line 848, in redispatch
+    return self._handle.redispatch_boxed(keyset, *args, **kwargs)  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_library/custom_ops.py", line 343, in backend_impl
+    result = self._backend_fns[device_type](*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_compile.py", line 53, in inner
+    return disable_fn(*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_dynamo/eval_frame.py", line 1044, in _fn
+    return fn(*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/torch/_library/custom_ops.py", line 376, in wrapped_fn
+    return fn(*args, **kwargs)
+  File "/home/seeed/workspace/cosmos-transfer2.5/.venv/lib/python3.13/site-packages/xformers/ops/fmha/flash.py", line 140, in _flash_fwd
+    out, softmax_lse, p, rng_state = _C_flashattention.fwd(
+                                     ~~~~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<11 lines>...
+        None,  # rng
+        ^^^^^^^^^^^^
+    )
+    ^
+torch.AcceleratorError: CUDA error: no kernel image is available for execution on the device
+Search for `cudaErrorNoKernelImageForDevice' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+(cosmos-transfer2) seeed@seeed:~/workspace/cosmos-transfer2.5$ 

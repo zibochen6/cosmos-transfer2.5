@@ -1,0 +1,23 @@
+{
+    "name": "lerobot_multicontrol",
+    "prompt_path": "../robot_lerobot_prompt.txt",
+    "video_path": "../../../lerobot/seeed_rebot_b601_dm/organize_test_tube/videos/observation.images.side/chunk-000/file-000_25s.mp4",
+    "guidance": 3,
+    "negative_prompt": "The video captures a game playing, with bad crappy graphics and cartoonish frames. It represents a recording of old outdated games. The lighting looks very fake. The textures are very raw and basic. The geometries are very primitive. The images are very pixelated and of poor CG quality. There are many subtitles in the footage. Overall, the video is unrealistic at all.",
+    "depth": {
+        "control_path": "../../../outputs/lerobot_side_augment/side_depth_25s.mp4",
+        "control_weight": 0.5
+    },
+    "edge": {
+        "control_path": "../edge/robot_lerobot_edge.mp4",
+        "control_weight": 1.0
+    },
+    "seg": {
+        "control_path": "../../../outputs/lerobot_controls_preview/seg.mp4",
+        "control_weight": 1
+    },
+    "vis": {
+        "control_path": "../../../outputs/lerobot_controls_preview/vis.mp4",
+        "control_weight": 0.5
+    }
+}
